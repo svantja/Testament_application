@@ -1,24 +1,16 @@
-#from application_code.TUI import tui
+from application_code.connect_main import bigchainDB
 
 
-class Controller:
-    def __init__(self):
+class Controller(bigchainDB):
+    def __init__(self, bigchaindb):
         self.test = "bbbb"
         print(self.test)
-        self.bigchaindb = None
-        self.tui = None
+        self.bigchaindb = bigchaindb
 
-    @staticmethod
-    def add_user(self, name, role):
 
+
+    def add_user(self, name, role, pub_key):
+        user = self.bigchaindb.create_user(name, role, pub_key)
         print(name, role)
-
-    @staticmethod
-    def add_to_group(self, user, group):
-        print("huhu")
-
-    @staticmethod
-    def add_group(self, group, permissions):
-        print("huhu")
 
 
