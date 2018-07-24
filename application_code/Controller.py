@@ -1,16 +1,99 @@
+import io
+import json
+
+from werkzeug._compat import to_unicode
+
 from application_code.connect_main import bigchainDB
+from bigchaindb_driver.crypto import generate_keypair
 
 
 class Controller(bigchainDB):
     def __init__(self, bigchaindb):
-        self.test = "bbbb"
-        print(self.test)
         self.bigchaindb = bigchaindb
-
-
 
     def add_user(self, name, role, pub_key):
         user = self.bigchaindb.create_user(name, role, pub_key)
         print(name, role)
 
+    def set_up(self):
+        self.bigchaindb.admin = generate_keypair()
+        self.save_keys(self.bigchaindb.admin, 'svenja', 'admin')
+        self.bigchaindb.app_id, self.bigchaindb.admin_grp_id = self.bigchaindb.set_up_admin_role()
+        self.save_types(self.bigchaindb.app_id, 'app')
+        self.save_types(self.bigchaindb.admin_grp_id, 'admin')
+        notar_type, nachlass_type = self.bigchaindb.set_up_types()
+        self.save_types(notar_type, 'notar')
+        self.save_types(nachlass_type, 'nachlassgericht')
+        testament_type = self.bigchaindb.set_up_testament_type()
+        self.save_types(testament_type, 'testament')
+
+    def save_keys(self, keypair, name, role):
+        # open file and modifie content
+        with open('user_keys.json') as data_file:
+            data_loaded = json.load(data_file)
+            data_loaded['users'][name] = {'role': role, 'public': keypair.public_key, 'private': keypair.private_key}
+
+        # write modified content to file
+        with io.open('user_keys.json', 'w', encoding='utf8') as outfile:
+            str_ = json.dumps(data_loaded,
+                              indent=4, sort_keys=True,
+                              separators=(',', ': '), ensure_ascii=False)
+            outfile.write(to_unicode(str_))
+
+    def save_types(self, type_id, name):
+        # open file andmodify content
+        with open('group_types.json') as data_file:
+            data_loaded = json.load(data_file)
+            data_loaded['groups'][name] = type_id
+
+        # write modified content to file
+        with io.open('group_id.json', 'w', encoding='utf8') as outfile:
+            str_ = json.dumps(data_loaded,
+                              indent=4, sort_keys=True,
+                              separators=(',', ': '), ensure_ascii=False)
+            outfile.write(to_unicode(str_))
+
+    def set_up_key_file(self):
+        data = {
+            'users': {},
+        }
+        with io.open('user_keys.json', 'w', encoding='utf8') as outfile:
+            str_ = json.dumps(data,
+                              indent=4, sort_keys=True,
+                              separators=(',', ': '), ensure_ascii=False)
+            outfile.write(to_unicode(str_))
+
+        with open('user_keys.json') as data_file:
+            data_loaded = json.load(data_file)
+            print(data_loaded)
+
+    def set_up_types_file(self):
+        data = {
+            'groups': {},
+        }
+        with io.open('group_types.json', 'w', encoding='utf8') as outfile:
+            str_ = json.dumps(data,
+                              indent=4, sort_keys=True,
+                              separators=(',', ': '), ensure_ascii=False)
+            outfile.write(to_unicode(str_))
+
+        with open('group_types.json') as data_file:
+            data_loaded = json.load(data_file)
+            print(data_loaded)
+
+# save user keypairs
+# {users: {
+#     svenja: {
+#        role: notar
+#        public: key,
+#        private: key,
+#        },
+#    raphel:{
+#        role: notar,
+#        public: key,
+#        private: key,
+#        },
+#     },
+# }}
+# save testament_type_id {testament_type: id}
 

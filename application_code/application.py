@@ -13,7 +13,7 @@ class Main:
     app = Application()
     inp = ""
     while inp != "q":
-        inp = input("input: new User, add to Group, create new Group")
+        inp = input("input: new User, new Testament, get Testament")
         app.tui.process_input(inp)
         if inp == "q":
             break

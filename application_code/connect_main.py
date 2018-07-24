@@ -1,28 +1,21 @@
 from bigchaindb_driver import BigchainDB
-from bigchaindb_driver.crypto import generate_keypair
 import datetime, time
 
 
 class bigchainDB:
     def __init__(self):
-        self.admin = generate_keypair()
+        self.admin = None
         print(self.admin)
         # port to which connect to
         self.db = BigchainDB('192.168.99.100:9984')
+        #self.db = None
         self.nameSpace = 'testament'
         # dictionary of user types
         self.user_types = {}
         self.users = {}
         # id of the application
-        self.app_id = self.set_up_admin_role()
-        print("app set up")
-        # set up the other user-types: notar, nachlassgericht
-        self.set_up_types()
-        print("types set up")
-        # set up the testament type
-        self.testament_type_id = self.set_up_testament_type()
-        # create admin user
-        #self.admin_user = self.create_user('administrator', 'admin', self.admin.public_key)
+        self.app_id = None
+        self.admin_grp_id = None
 
 
     def create_user(self, name, role, user_pub):
@@ -69,6 +62,12 @@ class bigchainDB:
         if 'admin' not in self.user_types:
             print("set up admin and app first!")
             return
+        # check if types already exist
+        check = self.db.assets.get(search='testament.notar')
+        check_2= self.db.assets.get(search='testament.nachlassgericht')
+
+        if len(check) != 0 and len(check_2) != 0:
+            print("user types already created")
 
         notar_group_asset = {
             'data': {
@@ -83,8 +82,10 @@ class bigchainDB:
         }
 
         notar_group_id = (self.create_new_asset(self.admin, notar_group_asset, notar_group_metadata))['id']
-        print("notar_grp_id:"+ notar_group_id)
+
         self.user_types.update({'notar': notar_group_id})
+        # TODO: save group_id in .txt File: {
+
 
         for i in self.user_types.values():
             print(i)
@@ -104,6 +105,8 @@ class bigchainDB:
         nachlassgericht_group_id = (self.create_new_asset(self.admin, nachlassgericht_group_asset, nachlassgericht_group_metadata))['id']
 
         self.user_types.update({'nachlassgericht': nachlassgericht_group_id})
+        # TODO: save group_id in .txt File
+        return notar_group_id, nachlassgericht_group_id
 
     # method shall only be called once -> only for initialzation of the database
     # only the admin is later allowed to create new users
@@ -113,9 +116,9 @@ class bigchainDB:
         check = self.db.assets.get(search='testament.admin')
         check_2 = self.db.assets.get(search='testament')
 
-        #if len(check) != 0 and len(check_2) != 0:
-        #    print("already created")
-        #    return
+        if len(check) != 0 and len(check_2) != 0:
+            print("already created")
+            return
 
         print("create group asset for admin")
 
@@ -130,7 +133,8 @@ class bigchainDB:
         }
 
         admin_group_id = (self.create_new_asset(self.admin, admin_group_asset, admin_group_metadata))['id']
-
+        # TODO: save group_id in .txt File
+        # TODO: save private + public key in .txt File
         self.user_types.update({'admin': admin_group_id})
         d = datetime.datetime.now()
         user_metadata = {
@@ -160,7 +164,7 @@ class bigchainDB:
         print("admin created, fehlt noch app")
         app_id = (self.create_new_asset(self.admin, app_asset, app_metadata))['id']
 
-        return app_id
+        return app_id, admin_group_id
 
 # method shall only be called once -> only for initialzation of the database
     def create_new_asset(self, keypair, asset, metadata):
@@ -184,12 +188,8 @@ class bigchainDB:
             except:
                 print("exception...")
                 trials += 1
-        print(trials)
         trials += 1
 
-        print(self.db.transactions.status(condition['id'])['status'])
-
-        print("hhhhh")
         if condition == sent:
             #creating assets...
             print("failure while creating new asset")
@@ -233,14 +233,10 @@ class bigchainDB:
         }
 
         instance = self.create_new_asset(self.admin, asset, metadata)
-        print("fehlerhier")
-        print(instance['id'])
         transfer = self.transfer_asset(instance, self.admin, user_public, user_metadata)
-        print(transfer)
         return instance
 
     def transfer_asset(self, transaction, fromkey, tokey, metadata):
-        print(transaction['id'])
         asset_id = transaction['id']
         transfer_asset = {
             'id': asset_id,
@@ -248,7 +244,6 @@ class bigchainDB:
         output_index = 0
         creation_tx = transaction
         output = creation_tx['outputs'][output_index]
-        #output = transaction['outputs'][output_index]
         transfer_input = {
             'fulfillment': output['condition']['details'],
             'fulfills': {
@@ -270,11 +265,7 @@ class bigchainDB:
             private_keys=self.admin.private_key,
         )
 
-        print("error?")
-        print(fulfilled_transfer)
-        print(prepared_transfer)
         sent_transfer = self.db.transactions.send(fulfilled_transfer)
-        print("error...")
         if sent_transfer == fulfilled_transfer:
             return sent_transfer
         return sent_transfer

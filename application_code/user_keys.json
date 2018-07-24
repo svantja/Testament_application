@@ -1,0 +1,14 @@
+{
+    "users": {
+        "ana": {
+            "private": "5UHEiLQTstBk3L7VCUuPvQS3HdDkX3KVd2KfCiQi4UND",
+            "public": "BzKnut9P95LxGtHypvNNekBXhbKEfBDtJau6wERKqBHd",
+            "role": "admin"
+        },
+        "blub": {
+            "private": "ATUqvfvoaDTRzQehdRyWVVQ3SEt93L3bQDTqeC1cGBGf",
+            "public": "mWVgHi4sqTntveVWxnoa1XMwPQaUyGZhqa56Xf1CeAk",
+            "role": "notar"
+        }
+    }
+}
