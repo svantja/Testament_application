@@ -11,10 +11,21 @@ class Controller(bigchainDB):
     def __init__(self, bigchaindb):
         self.bigchaindb = bigchaindb
 
-    def add_user(self, name, role, pub_key):
-        user = self.bigchaindb.create_user(name, role, pub_key)
+    def add_user(self, name, role, user_keys):
+        user_id = self.bigchaindb.create_user(name, role, user_keys.public_key)
+        self.save_keys(user_keys, name, role)
         print(name, role)
 
+    def check_user(self, name):
+        with open('user_keys.json') as data_file:
+            data_loaded = json.load(data_file)
+            if name in data_loaded['users']:
+                role = data_loaded['users'][name]['role']
+                keys = {data_loaded['users'][name]['public'], data_loaded['users'][name]['private']}
+                return role, keys
+            return None, None
+
+    # nur einmalig aufrufen
     def set_up(self):
         self.bigchaindb.admin = generate_keypair()
         self.save_keys(self.bigchaindb.admin, 'svenja', 'admin')
@@ -81,19 +92,5 @@ class Controller(bigchainDB):
             data_loaded = json.load(data_file)
             print(data_loaded)
 
-# save user keypairs
-# {users: {
-#     svenja: {
-#        role: notar
-#        public: key,
-#        private: key,
-#        },
-#    raphel:{
-#        role: notar,
-#        public: key,
-#        private: key,
-#        },
-#     },
-# }}
-# save testament_type_id {testament_type: id}
-
+    def create_new_testament(self, data, keys):
+        print("create new testament with " + data + " from " + keys)

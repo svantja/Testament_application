@@ -6,34 +6,63 @@ from bigchaindb_driver.crypto import generate_keypair
 class Tui(Controller):
     def __init__(self, controller):
         self.controller = controller
+        self.role = None
+        self.keys = None
 
     def process_input(self, test):
-        if test.startswith("new User"):
-            role = input("enter user role: (notar, nachlassgericht"
-                         ")")
-
-            while True:
-                if role == "notar" or role == "nachlassgericht":
-                    print("jaaay")
-                    print(role)
-                    break
+        if self.role is not None and self.keys is not None:
+            if test.startswith("abmelden"):
+                self.keys = None
+                self.role = None
+                print("erfolgreich abgemeldet.\n mit anderem Nutzer anmedel: \n")
+                return
+            elif test.startswith("create testament"):
+                print("create new testament")
+                if self.role != "notar":
+                    print("must be notar to create new testament")
+                    return
+            elif test.startswith("read testament"):
+                print("read testament: admin, nachlass, notar")
+            elif test.startswith("new User"):
+                if self.role != "admin":
+                    print("must be admin to add new user")
+                    return
+                role = input("enter user role: (notar, nachlassgericht"
+                             ")\n")
+                while True:
+                    if role == "notar" or role == "nachlassgericht":
+                        print("jaaay")
+                        print(role)
+                        break
+                    else:
+                        role = input("retry entering, only notar + nachlassgericht are allowed")
+                name = input("enter user name\n")
+                keys = generate_keypair()
+                self.controller.add_user(name, role, keys)
+                print("new user")
+        else:
+            if test.startswith("anmelden"):
+                user = input("enter user name:\n")
+                self.role, self.keys = self.controller.check_user(user)
+                if self.role is not None and self.keys is not None:
+                    print("success")
+                    print(generate_keypair())
+                    print(self.keys)
                 else:
-                    role = input("retry entering, only notar + nachlassgericht are allowed")
-            name = input("enter user name")
-            keys = generate_keypair()
-            # TODO: save keypair in .txt File: {role: {name: {public: key, private: key}}}
-            self.controller.add_user(name, role, keys.public_key)
-            print("new user")
-        elif test.startswith("set up"):
-            self.controller.set_up_key_file()
-            self.controller.set_up_types_file()
-            self.controller.set_up()
-        elif test.startswith("file"):
-            self.controller.set_up_key_file()
-            self.controller.save_keys(generate_keypair(), "ana", "admin")
-            self.controller.save_keys(generate_keypair(), "blub", "notar")
-            with open('user_keys.json') as data_file:
-                data_loaded = json.load(data_file)
-                print(data_loaded)
+                    print("user doesnt exist")
+            # nur einmalig aufrugen
+            elif test.startswith("set up"):
+                self.controller.set_up_key_file()
+                self.controller.set_up_types_file()
+                self.controller.set_up()
+            elif test.startswith("file"):
+                self.controller.set_up_key_file()
+                self.controller.save_keys(generate_keypair(), "ana", "admin")
+                self.controller.save_keys(generate_keypair(), "blub", "notar")
+                with open('user_keys.json') as data_file:
+                    data_loaded = json.load(data_file)
+                    data = data_loaded['users']['ana']
+                    print(data)
+                    print(data_loaded)
 
-        print("hhh", test)
+

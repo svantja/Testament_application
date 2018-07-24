@@ -1,3 +1,5 @@
+import json
+
 from bigchaindb_driver import BigchainDB
 import datetime, time
 
@@ -64,7 +66,7 @@ class bigchainDB:
             return
         # check if types already exist
         check = self.db.assets.get(search='testament.notar')
-        check_2= self.db.assets.get(search='testament.nachlassgericht')
+        check_2 = self.db.assets.get(search='testament.nachlassgericht')
 
         if len(check) != 0 and len(check_2) != 0:
             print("user types already created")
@@ -133,8 +135,6 @@ class bigchainDB:
         }
 
         admin_group_id = (self.create_new_asset(self.admin, admin_group_asset, admin_group_metadata))['id']
-        # TODO: save group_id in .txt File
-        # TODO: save private + public key in .txt File
         self.user_types.update({'admin': admin_group_id})
         d = datetime.datetime.now()
         user_metadata = {
@@ -198,14 +198,16 @@ class bigchainDB:
         return condition
 
     def create_user_asset(self, user_type_name, user_public, user_metadata):
-        if user_type_name not in self.user_types:
-            print("cannot create user, user group doesn't exists yet")
-            return
-
+        with open('group_types.json') as data_file:
+            data_loaded = json.load(data_file)
+            if user_type_name not in data_loaded['groups']:
+                print("cannot create user, user group doesn't exists yet")
+                return
+        link = data_loaded['groups'][user_type_name]
         asset = {
             'data': {
                 'ns': self.nameSpace + '.' + user_type_name,
-                'link': self.user_types[user_type_name],
+                'link': link,
                 'createdBy': self.admin.public_key,
                 'type': user_type_name,
                 'policy': [
