@@ -27,7 +27,8 @@ class Controller(bigchainDB):
 
     # nur einmalig aufrufen
     def set_up(self):
-        self.bigchaindb.admin = generate_keypair()
+        keys = generate_keypair()
+        self.bigchaindb.admin = {'public': keys.public_key, 'private': keys.private_key}
         self.save_keys(self.bigchaindb.admin, 'svenja', 'admin')
         self.bigchaindb.app_id, self.bigchaindb.admin_grp_id = self.bigchaindb.set_up_admin_role()
         self.save_types(self.bigchaindb.app_id, 'app')

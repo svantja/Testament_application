@@ -19,18 +19,17 @@ class bigchainDB:
         self.app_id = None
         self.admin_grp_id = None
 
-
+    # TODO: amtssitzvom notar, standort des nachlassgerichts
     def create_user(self, name, role, user_pub):
         # date == Datum GMT ex.: Mon Jul 23 2018 17:15:24 GMT+0200
         # timestamp == miliseconds ex.:
-        # Mon Jul 23 2018 17:15:24 GMT+0200
         d = datetime.datetime.now()
         user_metadata = {
             'event': 'User Assigned',
             'name': name,
             'date': d.strftime('%a %b %d %Y %H:%M:%S %Z'),
             'timestamp': time.mktime(d.timetuple())*1000,
-            'publicKey': self.admin.public_key,
+            'publicKey': self.admin['public'],
             'eventData': {
                 'userType': role
             }
@@ -38,6 +37,14 @@ class bigchainDB:
         user_id = self.create_user_asset(role, user_pub, user_metadata)
         self.users.update({name: user_id})
         return user_id
+
+    def create_new_testament(self, metadata, user_key):
+        d = datetime.datetime.now()
+        testament_metadata = metadata
+        with open('group_types.json') as data_file:
+            data_loaded = json.load(data_file)
+            testament_grp_id = data_loaded['groups']['testament']
+        testament_id = self.create_type_asset('testament', testament_grp_id, testament_metadata, user_key)
 
     def set_up_testament_type(self):
         if 'notar' not in self.user_types:
@@ -86,8 +93,6 @@ class bigchainDB:
         notar_group_id = (self.create_new_asset(self.admin, notar_group_asset, notar_group_metadata))['id']
 
         self.user_types.update({'notar': notar_group_id})
-        # TODO: save group_id in .txt File: {
-
 
         for i in self.user_types.values():
             print(i)
@@ -131,7 +136,7 @@ class bigchainDB:
             },
         }
         admin_group_metadata = {
-             'can_link': [self.admin.public_key]
+             'can_link': [self.admin['public']]
         }
 
         admin_group_id = (self.create_new_asset(self.admin, admin_group_asset, admin_group_metadata))['id']
@@ -142,12 +147,12 @@ class bigchainDB:
             'name': 'administrator',
             'date': d.strftime('%a %b %d %Y %H:%M:%S %Z'),
             'timestamp': time.mktime(d.timetuple())*1000,
-            'publicKey': self.admin.public_key,
+            'publicKey': self.admin['public'],
             'eventData': {
                 'userType': 'admin'
             }
         }
-        user_id = self.create_user_asset('admin', self.admin.public_key, user_metadata)
+        user_id = self.create_user_asset('admin', self.admin['public'], user_metadata)
         self.users.update({'administrator': user_id})
 
 
@@ -170,12 +175,12 @@ class bigchainDB:
     def create_new_asset(self, keypair, asset, metadata):
         tx = self.db.transactions.prepare(
             operation='CREATE',
-            signers=keypair.public_key,
+            signers=keypair['public'],
             asset=asset,
             metadata=metadata,
         )
         print(tx)
-        condition = self.db.transactions.fulfill(tx, private_keys=keypair.private_key)
+        condition = self.db.transactions.fulfill(tx, private_keys=keypair['private'])
         print(condition)
         sent = self.db.transactions.send(condition)
         trials = 0
@@ -197,6 +202,15 @@ class bigchainDB:
 
         return condition
 
+    def create_type_asset(self, typename, typeid, metadata, user_key):
+        asset = {
+            'data': {
+                'ns': self.nameSpace + '.' + typename,
+                'link': typeid,
+            }
+        }
+        self.create_new_asset(user_key, asset, metadata)
+
     def create_user_asset(self, user_type_name, user_public, user_metadata):
         with open('group_types.json') as data_file:
             data_loaded = json.load(data_file)
@@ -208,7 +222,7 @@ class bigchainDB:
             'data': {
                 'ns': self.nameSpace + '.' + user_type_name,
                 'link': link,
-                'createdBy': self.admin.public_key,
+                'createdBy': self.admin['public'],
                 'type': user_type_name,
                 'policy': [
                     {
@@ -228,7 +242,7 @@ class bigchainDB:
             'event': 'User Added',
             'date': d.strftime('%a %b %d %Y %H:%M:%S %Z'),
             'timestamp': time.mktime(d.timetuple())*1000,
-            'publicKey': self.admin.public_key,
+            'publicKey': self.admin['public'],
             'eventData': {
                 'userType': user_type_name
             }
@@ -264,7 +278,7 @@ class bigchainDB:
 
         fulfilled_transfer = self.db.transactions.fulfill(
             prepared_transfer,
-            private_keys=self.admin.private_key,
+            private_keys=self.admin['private'],
         )
 
         sent_transfer = self.db.transactions.send(fulfilled_transfer)

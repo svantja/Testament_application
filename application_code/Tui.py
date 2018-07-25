@@ -21,6 +21,19 @@ class Tui(Controller):
                 if self.role != "notar":
                     print("must be notar to create new testament")
                     return
+                with open('testament_template.json') as data_file:
+                    data_loaded = json.load(data_file)
+                    data_loaded['erblasser']['vorname'] = input("enter personal data: vorname\n")
+                    data_loaded['erblasser']['familienname'] = input("enter personal data: familienname\n")
+                    data_loaded['erblasser']['geburtsname'] = input("enter personal data: geburtsname\n")
+                    data_loaded['erblasser']['geschlecht'] = input("enter personal data: geschlecht \n")
+                    data_loaded['erblasser']['geburtstag'] = input("enter personal data: geburtstag dd.mm.yy\n")
+                    data_loaded['erblasser']['geburtsort'] = input("enter personal data: geburtsort\n")
+                    data_loaded['erblasser']['geburtsstaat'] = input("enter personal data: geburtsort\n")
+                    data_loaded['erblasser']['geburtsstandesamt'] = input("enter personal data: geburtsstandesamt\n")
+                    data_loaded['erblasser']['geburtenbuchnummer'] = input("enter personal data: geburtenbuchnummer\n")
+                self.controller.create_new_testament(data_loaded, self.keys)
+
             elif test.startswith("read testament"):
                 print("read testament: admin, nachlass, notar")
             elif test.startswith("new User"):
