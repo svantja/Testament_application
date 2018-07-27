@@ -11,8 +11,8 @@ class Controller(bigchainDB):
     def __init__(self, bigchaindb):
         self.bigchaindb = bigchaindb
 
-    def add_user(self, name, role, user_keys):
-        user_id = self.bigchaindb.create_user(name, role, user_keys.public_key)
+    def add_user(self, name, role, user_keys, ort):
+        user_id = self.bigchaindb.create_user(name, role, user_keys.public_key, ort)
         self.save_keys(user_keys, name, role)
         print(name, role)
 

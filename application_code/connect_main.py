@@ -20,13 +20,14 @@ class bigchainDB:
         self.admin_grp_id = None
 
     # TODO: amtssitzvom notar, standort des nachlassgerichts
-    def create_user(self, name, role, user_pub):
+    def create_user(self, name, role, user_pub, ort):
         # date == Datum GMT ex.: Mon Jul 23 2018 17:15:24 GMT+0200
         # timestamp == miliseconds ex.:
         d = datetime.datetime.now()
         user_metadata = {
             'event': 'User Assigned',
             'name': name,
+            'ort': ort,
             'date': d.strftime('%a %b %d %Y %H:%M:%S %Z'),
             'timestamp': time.mktime(d.timetuple())*1000,
             'publicKey': self.admin['public'],

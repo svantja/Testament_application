@@ -51,7 +51,11 @@ class Tui(Controller):
                         role = input("retry entering, only notar + nachlassgericht are allowed")
                 name = input("enter user name\n")
                 keys = generate_keypair()
-                self.controller.add_user(name, role, keys)
+                if role == "notar":
+                    ort = input("entry amtssitz:\n")
+                else:
+                    ort = input("entry standort:\n)")
+                self.controller.add_user(name, role, keys, ort)
                 print("new user")
         else:
             if test.startswith("anmelden"):
