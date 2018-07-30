@@ -1,13 +1,18 @@
 {
     "users": {
-        "ana": {
-            "private": "BQH22x4q3eXhUV26W4cohKiPTNFjkoFkPAV7jB4S6PEp",
-            "public": "DiHL1ynu2zDK4URwb4Cyx2ok9u9vzg4BwjzXneLX7iNN",
+        "administrator": {
+            "private": "AQ32Zh85zJjPFxcDK1mbWbjbQgN7pH6UK5BmEtHQGiAg",
+            "public": "5VWjqyUUF2WRWR6DXYsTE84JCM7ShcPY23k5SmYFN8af",
             "role": "admin"
         },
-        "blub": {
-            "private": "4bChrW6n6GohwVxF8RRjbh7ZvrmnPCeSbk2nrn8dqaQh",
-            "public": "F12cd5P5macvEv4qUgktebnniXYmf5ZFcVJDKMtkugdu",
+        "max": {
+            "private": "6CPfRN6T6Bm2w56ALtw2hGS9PGJYwEVSbzkZPPx18YPN",
+            "public": "GecowqgZYdZDDFvYLQ76CE86YZE15JB3ZZttF2cV5mer",
+            "role": "nachlassgericht"
+        },
+        "svenja": {
+            "private": "ExipbGsKauqZ44MWF5fbeYyvSGmN38AcgWcvJWSk8frM",
+            "public": "8P4v84iRDGDhpwaidCE8DehtNmgBiyXUjGpV73GUwhdt",
             "role": "notar"
         }
     }

@@ -1,36 +1,37 @@
-'erblasser': {
-                'vorname': 'name',
-                'familienname': 'name',
-                'geburtsname': 'name',
-                'geschlecht': 'm/w',
-                'geburtstag': 'dd.mm.yy',
-                'geburtsort': 'ort',
-                'geburtsstaat': 'staat',
-                'geburtsstandesamt': 'standesamt',
-                'geburtenbuchnummer': 'nummer,'
+{"erblasser": {
+                "vorname": "name",
+                "familienname": "name",
+                "geburtsname": "name",
+                "geschlecht": "m/w",
+                "geburtstag": "dd.mm.yy",
+                "geburtsort": "ort",
+                "geburtsstaat": "staat",
+                "geburtsstandesamt": "standesamt",
+                "geburtenbuchnummer": "nummer"
             },
-            'urkunde': {
-                'art': 'art',
-                'datum': 'datum',
-                'notar': {
-                    'name': 'name asset ersteller',
-                    'amtssitz': 'amtssitz',
+            "urkunde": {
+                "art": "art",
+                "datum": "datum",
+                "notar": {
+                    "name": "name asset ersteller",
+                    "amtssitz": "amtssitz"
                 },
-                'urkundenrollennummer': 'nummer',
+                "urkundenrollennummer": "nummer"
             },
-            'verwahrung': {
-                'analog': {
-                    'verwahrstelle': {
-                        'bezeichnung': 'bezeichnung',
-                        'anschrift': 'anschrift',
+            "verwahrung": {
+                "analog": {
+                    "verwahrstelle": {
+                        "bezeichnung": "bezeichnung",
+                        "anschrift": "anschrift"
                     },
-                    'verwahrkennzeichen': {
-                        'verwahrbuchnummer': 'nummer',
-                        'aktenzeichen': 'zeichen',
-                        'urkundenrollennummer': 'nummer',
-                    },
+                    "verwahrkennzeichen": {
+                        "verwahrbuchnummer": "nummer",
+                        "aktenzeichen": "zeichen",
+                        "urkundenrollennummer": "nummer"
+                    }
                 },
-                'digital': {
-                    'ablageort': 'ordner/filesystem',
-                },
+                "digital": {
+                    "ablageort": "ordner/filesystem"
+                }
             }
+}

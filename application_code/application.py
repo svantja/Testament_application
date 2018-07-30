@@ -11,11 +11,12 @@ class Application:
 
 class Main:
     app = Application()
-    inp = input("input: new User, set up, anmelden, abmelden, "
-                "create testament, read testament, file(for test purpose)\n")
+    inp = input("input: new User, set up, Login, Logout, "
+                "create testament, read testament, file - (for test purpose), load old - (for test purpose)\n")
+    # process user input until application is closed ('q' was entered)
     while inp != "q":
         app.tui.process_input(inp)
-        inp = input("input: new User, set up, anmelden, abmelden, "
-                    "create testament, read testament, file(for test purpose)\n")
+        inp = input("input: new User, set up, Login, Logout, "
+                    "create testament, read testament, file - (for test purpose), load old - (for test purpose)\n")
         if inp == "q":
             break

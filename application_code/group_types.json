@@ -1,0 +1,9 @@
+{
+    "groups": {
+        "admin": "e17c0595fc9f3e1955fee49dc151aff4f324da5fa1ddab578aafc88ea2ed7928",
+        "app": "d0333d5df402fb247c9933253363a228721919adc5f7696bc619fbaaa593327f",
+        "nachlassgericht": "c895bcccfa9c522874a96f3ae89cccbdc38f78937958fd9beae639b21463637d",
+        "notar": "1dc20de1321c09239ce33ec83c95d74625cd6bb2fcbc51b6f811513d9281caaf",
+        "testament": "211fd326028616f98752e36ff74a82aebe0bad4efc442f779a10f3ccf0755a65"
+    }
+}
