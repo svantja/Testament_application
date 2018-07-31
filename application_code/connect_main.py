@@ -49,19 +49,21 @@ class bigchainDB:
         return testament_id
 
     def search_testament(self, input):
-        # (search="\"testament.testament\"\\\"document\"")
-        list_of_testaments = self.db.assets.get(search="\"testament.testament\"")
+        # search for all assets, related to testament type-assets with the name document
+        list_of_testaments = self.db.assets.get(search="\"testament.testament\"\\\"document\"")
+	# iterate over resuls (list of assets)
         for testament in list_of_testaments:
+	    # get asset id (== transaction id)
             id = testament['id']
+	    # search for transaction with asset id and operation type CREATE
             testament_asset = self.db.transactions.get(asset_id=id, operation='CREATE')[0]
-            # erblasser, daten der urkunde, daten der verwahrung
+            # erblasser, daten der urkunde, daten der verwahrung (['erblasser']['vorname'])
             length = len(input.keys())
             for key in input:
                 if key in testament_asset['metadata']:
-                    print(key)
                     if input[key] in testament_asset['metadata'][key].values():
-                        print("yaaaaay")
                         length = length - 1
+	    # all values have to match. otherwise the deposit information are not equal to the search request
             if length == 0:
                 print("testament found: " + testament_asset['metadata']['verwahrung']['digital']['ablageort'])
 
