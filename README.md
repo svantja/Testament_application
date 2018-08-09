@@ -1,8 +1,18 @@
 # About this applicatin
 This application was developed as part of my Bachelorthesis at the HTWG Konstanz.
+The usage of the latest Version of the BigchainDB Server ist not yet implemented. The application uses the ``version 1.3.0 kyber-master``. 
+
+---
+_**Note:**_
+
+It would make sense to migrate the functions of ``version 1.3.0 kyber-master`` to the latest version in the future. To do so the plugin ``bigchaindb-smart-assets`` needs to be adapted.
+
+To start the latest version of the server (as at 09.08.2018 ``version 2.0.0b3``) a small change in the docker-compose.yml file is necessary. Replace the command ``.ci/entrypoint.sh`` in line 45 with the command inside the entrypoint.sh file ``bigchaindb -l DEBUG start``.
+
+---
 
 ## Prequesites
-to run this application you need the plugin smart-assets and a specific branch of bigchaindb (kyber-master):
+To run this application you need the plugin smart-assets and a specific branch of bigchaindb (kyber-master):
 ### Smart Assets
 
 #### Installation
