@@ -1,4 +1,4 @@
-# About this applicatin
+# About this application
 This application was developed as part of my Bachelorthesis at the HTWG Konstanz.
 The usage of the latest Version of the BigchainDB Server ist not yet implemented. The application uses the ``version 1.3.0 kyber-master``. 
 
